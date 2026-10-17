@@ -187,6 +187,10 @@ Idempotency-Key: <clientVisitId>
 - SQL queries use **parameterized statements** to prevent injection.
 - Zero credentials or API keys are committed.
 
+### Production Note: Authentication Tokens & Photo Storage
+- **Authentication Tokens**: In a production environment, user credentials should be stored securely using `flutter_secure_storage` (backed by Android Keystore and `EncryptedSharedPreferences`). API requests would transmit short-lived JWTs via `Authorization: Bearer <token>` headers with automatic refresh token rotation. If the server responds with `401 Unauthorized`, cached tokens are cleared and the user is prompted to re-authenticate without losing any unsynced local drafts.
+- **Photo Storage**: Photos should be compressed (e.g. WebP/JPEG) and uploaded asynchronously to cloud object storage (AWS S3, Google Cloud Storage, or Cloudinary) using pre-signed upload URLs. Only the returned immutable asset reference key is stored in the local SQLite table and transmitted as `photoReference` in the visit sync payload, keeping the database lean and network payloads small.
+
 ---
 
 ## 🧪 Automated Test Suite
