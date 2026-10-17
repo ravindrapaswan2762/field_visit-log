@@ -408,6 +408,6 @@ Clean layering came second — domain entities and use cases have zero Flutter U
 
 <div align="center">
 
-**Built with Flutter 💙 — offline-first, reliable, and idempotent by design.**
+**Built with Flutter — offline-first, reliable, and idempotent by design.**
 
 </div>
