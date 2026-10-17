@@ -29,6 +29,7 @@ class PhotoService {
     try {
       final XFile? picked = await _picker.pickImage(
         source: source,
+        preferredCameraDevice: CameraDevice.rear,
         maxWidth: 1920,
         maxHeight: 1920,
         imageQuality: 85,

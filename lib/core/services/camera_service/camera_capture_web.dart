@@ -29,6 +29,7 @@ class _WebCameraDialogState extends State<_WebCameraDialog> {
   String? _capturedDataUrl;
   List<html.MediaDeviceInfo> _videoDevices = [];
   int _currentDeviceIndex = 0;
+  bool _isRearCamera = true;
 
   @override
   void initState() {
@@ -36,7 +37,7 @@ class _WebCameraDialogState extends State<_WebCameraDialog> {
     _initCamera();
   }
 
-  Future<void> _initCamera([String? deviceId]) async {
+  Future<void> _initCamera({String? deviceId, String? facingMode}) async {
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -66,13 +67,16 @@ class _WebCameraDialogState extends State<_WebCameraDialog> {
       }
 
       Map<String, dynamic> videoConstraints;
-      if (deviceId != null) {
+      if (deviceId != null && deviceId.isNotEmpty) {
         videoConstraints = {
-          'deviceId': {'exact': deviceId}
+          'deviceId': {'exact': deviceId},
+          'width': {'ideal': 1280},
+          'height': {'ideal': 720},
         };
       } else {
+        final mode = facingMode ?? (_isRearCamera ? 'environment' : 'user');
         videoConstraints = {
-          'facingMode': {'ideal': 'environment'},
+          'facingMode': {'ideal': mode},
           'width': {'ideal': 1280},
           'height': {'ideal': 720},
         };
@@ -93,7 +97,7 @@ class _WebCameraDialogState extends State<_WebCameraDialog> {
       final video = html.VideoElement()
         ..autoplay = true
         ..muted = true
-                ..style.width = '100%'
+        ..style.width = '100%'
         ..style.height = '100%'
         ..style.objectFit = 'cover'
         ..style.borderRadius = '12px'
@@ -105,6 +109,14 @@ class _WebCameraDialogState extends State<_WebCameraDialog> {
 
       ui_web.platformViewRegistry
           .registerViewFactory(_viewId!, (int id) => video);
+
+      try {
+        final allDevices = await nav.mediaDevices!.enumerateDevices();
+        _videoDevices = allDevices
+            .where((d) => d.kind == 'videoinput')
+            .cast<html.MediaDeviceInfo>()
+            .toList();
+      } catch (_) {}
 
       if (mounted) {
         setState(() {
@@ -123,10 +135,15 @@ class _WebCameraDialogState extends State<_WebCameraDialog> {
   }
 
   void _switchCamera() {
-    if (_videoDevices.length <= 1) return;
-    _currentDeviceIndex = (_currentDeviceIndex + 1) % _videoDevices.length;
-    final nextDevice = _videoDevices[_currentDeviceIndex];
-    _initCamera(nextDevice.deviceId);
+    _isRearCamera = !_isRearCamera;
+
+    if (_videoDevices.length > 1) {
+      _currentDeviceIndex = (_currentDeviceIndex + 1) % _videoDevices.length;
+      final nextDevice = _videoDevices[_currentDeviceIndex];
+      _initCamera(deviceId: nextDevice.deviceId);
+    } else {
+      _initCamera(facingMode: _isRearCamera ? 'environment' : 'user');
+    }
   }
 
   void _captureFrame() {
@@ -321,22 +338,23 @@ class _WebCameraDialogState extends State<_WebCameraDialog> {
                         ),
                       ],
 
-                      // Switch Camera icon if streaming and multiple cameras available
+                      // Switch Camera icon if streaming
                       if (!_isLoading &&
                           _errorMessage == null &&
-                          _capturedDataUrl == null &&
-                          _videoDevices.length > 1)
+                          _capturedDataUrl == null)
                         Positioned(
                           top: 10,
                           right: 10,
                           child: Material(
-                            color: Colors.black45,
+                            color: Colors.black54,
                             shape: const CircleBorder(),
                             child: IconButton(
                               icon: const Icon(Icons.flip_camera_ios,
-                                  color: Colors.white, size: 20),
+                                  color: Colors.white, size: 22),
                               onPressed: _switchCamera,
-                              tooltip: 'Switch Camera',
+                              tooltip: _isRearCamera
+                                  ? 'Switch to Front Camera'
+                                  : 'Switch to Rear Camera',
                             ),
                           ),
                         ),
