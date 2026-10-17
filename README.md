@@ -185,18 +185,6 @@ UI → Provider (ChangeNotifier) → Use Cases → Repository → Local SQLite
 - **Repository Pattern:** Pure domain interfaces isolated from data and framework layers.
 - **WorkManager & Connectivity Stream:** Multi-layer synchronization (foreground on reconnect + headless background workers).
 
-```mermaid
-flowchart LR
-    UI["Presentation<br/>Screens & Widgets"] --> P["VisitProvider<br/>(ChangeNotifier)"]
-    P --> UC["Domain<br/>Use Cases"]
-    UC --> R["VisitRepository"]
-    R --> L[("Local SQLite")]
-    R --> A["Remote API<br/>POST /api/v1/visits"]
-    S["SyncManager / SyncWorker"] --> R
-    C["Connectivity Stream"] --> S
-    W["WorkManager"] --> S
-```
-
 ### Project Folder Structure
 
 ```
@@ -216,8 +204,6 @@ lib/
 ---
 
 ## 🔁 Sync Flow & Status Lifecycle
-
-### Sequence of a Single Visit Upload
 
 ```mermaid
 sequenceDiagram
@@ -241,19 +227,6 @@ sequenceDiagram
         API-->>App: Permanent error
         App->>DB: UPDATE (status = failed, last_sync_error)
     end
-```
-
-### Sync Status State Machine
-
-```mermaid
-stateDiagram-v2
-    [*] --> pending: Visit saved locally
-    pending --> syncing: Network available & retry due
-    syncing --> synced: 200 / 201
-    syncing --> pending: 5xx, timeout, 429 (backoff)
-    syncing --> failed: 422 or max retries reached
-    failed --> pending: Manual retry
-    synced --> [*]
 ```
 
 ---
