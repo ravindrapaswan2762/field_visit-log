@@ -74,14 +74,7 @@ class _VisitDetailsScreenState extends State<VisitDetailsScreen> {
             letterSpacing: -0.3,
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.more_vert, color: Color(0xFF0F172A), size: 22),
-            onPressed: () {},
-            tooltip: 'More',
-          ),
-          const SizedBox(width: 4),
-        ],
+
       ),
       body: _buildBody(context),
     );

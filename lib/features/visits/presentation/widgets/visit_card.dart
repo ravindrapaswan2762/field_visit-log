@@ -105,28 +105,20 @@ class VisitCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 6),
                   Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           SyncStatusBadge(status: visit.syncStatus),
-                          const SizedBox(width: 6),
+                          const SizedBox(width: 4),
                           const Icon(
                             Icons.chevron_right,
                             size: 18,
                             color: Color(0xFF64748B),
                           ),
                         ],
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(right: 0),
-                        child: Icon(
-                          Icons.more_vert,
-                          size: 18,
-                          color: Color(0xFF64748B),
-                        ),
                       ),
                     ],
                   ),

@@ -63,15 +63,8 @@ class _VisitListScreenState extends State<VisitListScreen> {
       elevation: 0,
       scrolledUnderElevation: 0,
       toolbarHeight: 56,
-      leadingWidth: 48,
-      titleSpacing: 0,
-      leading: IconButton(
-        padding: const EdgeInsets.only(left: 14),
-        constraints: const BoxConstraints(),
-        icon: const Icon(Icons.menu, color: Color(0xFF0F172A), size: 22),
-        onPressed: () {},
-        tooltip: 'Menu',
-      ),
+      automaticallyImplyLeading: false,
+      titleSpacing: 16,
       title: const FittedBox(
         fit: BoxFit.scaleDown,
         alignment: Alignment.centerLeft,
@@ -169,15 +162,7 @@ class _VisitListScreenState extends State<VisitListScreen> {
           ),
         ),
 
-        // More options
-        IconButton(
-          icon: const Icon(Icons.more_vert, color: Color(0xFF0F172A), size: 20),
-          onPressed: () {},
-          tooltip: 'More',
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-        ),
-        const SizedBox(width: 8),
+        const SizedBox(width: 14),
       ],
     );
   }
