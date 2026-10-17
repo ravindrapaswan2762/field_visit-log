@@ -188,7 +188,7 @@ Idempotency-Key: <clientVisitId>
 - Zero credentials or API keys are committed.
 
 ### Production Note: Authentication Tokens & Photo Storage
-- **Authentication Tokens**: In a production environment, user credentials should be stored securely using `flutter_secure_storage` (backed by Android Keystore and `EncryptedSharedPreferences`). API requests would transmit short-lived JWTs via `Authorization: Bearer <token>` headers with automatic refresh token rotation. If the server responds with `401 Unauthorized`, cached tokens are cleared and the user is prompted to re-authenticate without losing any unsynced local drafts.
+- **Authentication Tokens**: In a production environment, user credentials should be stored securely using `flutter_secure_storage` (backed by Android Keystore and `EncryptedSharedPreferences`). API requests would transmit short-lived JWTs via `Authorization: Bearer <token>` headers with automatic refresh token rotation. If the server responds with `401 Unauthorized`, cached tokens are cleared and the user is guided to sign in again without losing any unsynced local drafts.
 - **Photo Storage**: Photos should be compressed (e.g. WebP/JPEG) and uploaded asynchronously to cloud object storage (AWS S3, Google Cloud Storage, or Cloudinary) using pre-signed upload URLs. Only the returned immutable asset reference key is stored in the local SQLite table and transmitted as `photoReference` in the visit sync payload, keeping the database lean and network payloads small.
 
 ---
@@ -212,3 +212,20 @@ flutter test integration_test/app_flow_test.dart
 1. **Photo Upload**: The mock server validates JSON visits and preserves local photo attachments. Remote binary photo synchronization is kept separate to prioritize core visit reliability.
 2. **WorkManager Battery Optimization**: On Android 12+, WorkManager execution can be deferred up to 15 minutes by Android Doze mode. Real-time foreground sync on network return compensates for active sessions.
 3. **Authentication**: The mock API operates in development mode without OAuth tokens; production deployments should integrate JWT headers in `ApiClient`.
+
+---
+
+## 📝 Technical Note (Decisions, Trade-offs & Next Steps)
+
+### What I Prioritised
+**Reliable offline persistence** was the top priority. Every visit is written to SQLite before any network call is attempted. The UI returns immediately after the local write; the user sees their visit instantly regardless of connectivity. Idempotency was treated as a first-class concern: each visit receives a stable UUID at creation, and that same ID is sent as the `Idempotency-Key` header on every upload attempt. This ensures that retries after dropped connections or timeouts never create duplicate records on the server.
+
+Clean layering came second — domain entities and use cases have zero Flutter UI or database dependencies, keeping business logic clean, isolated, and easily unit-testable.
+
+### One Important Trade-off
+**WorkManager vs. Foreground Sync**: WorkManager is the Android-recommended standard for guaranteed deferrable background work, but execution can be delayed 15+ minutes under aggressive OEM battery optimizations and Doze mode. The foreground connectivity listener fills this gap for active users by triggering an immediate sync pass the moment network returns. A permanent background service was intentionally avoided to respect battery life and eliminate persistent notification clutter.
+
+### What I Would Improve With One Additional Day
+1. **End-to-end integration test with a real SQLite database** — the current integration tests use `sqflite_common_ffi` (FFI-backed SQLite) which runs on desktop/CI without an emulator. I would add a dedicated automated test suite driving live Android emulator hardware directly.
+2. **Photo upload** — the mock server currently accepts JSON payloads with `photoReference`. I would add multipart upload support and a separate `/api/v1/visits/{id}/photo` endpoint so photo data can be streamed independently of the JSON payload.
+3. **Background sync visibility** — expose sync progress via a persistent foreground notification during an active sync pass so users on slow connections can see work is happening without opening the app.
