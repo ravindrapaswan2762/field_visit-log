@@ -41,10 +41,10 @@ The APK is output to `build/app/outputs/flutter-apk/app-debug.apk`.
 cd mock_server
 npm install
 npm start
-# Server runs at http://localhost:3000
+# Server runs at http://localhost:3001
 ```
 
-**Android emulator:** `http://10.0.2.2:3000`  
+**Android emulator:** `http://10.0.2.2:3001`  
 **Physical device:** replace `baseUrl` in `lib/core/constants/app_constants.dart` with your LAN IP.
 
 To simulate server errors:

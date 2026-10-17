@@ -14,8 +14,8 @@ npm start
 
 | Device                | Base URL                  |
 |-----------------------|---------------------------|
-| Android emulator      | `http://10.0.2.2:3000`    |
-| Physical device (LAN) | `http://192.168.x.x:3000` |
+| Android emulator      | `http://10.0.2.2:3001`    |
+| Physical device (LAN) | `http://192.168.x.x:3001` |
 
 Update `AppConstants.baseUrl` in `lib/core/constants/app_constants.dart`.
 

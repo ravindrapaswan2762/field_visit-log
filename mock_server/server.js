@@ -3,21 +3,22 @@
  * ==================================
  * FOR DEVELOPMENT/TESTING ONLY. Not a production backend.
  *
+ * Saves data directly to mock_server/data/visits.json on your computer disk!
+ *
  * POST /api/v1/visits
  *   Headers: Idempotency-Key: <clientVisitId>
  *   Body: { clientVisitId, customerName, notes, visitedAt, photoReference }
  *
- * Responses:
- *   201  Created
- *   200  Duplicate idempotent request (already stored, safe to mark synced)
- *   422  Validation error
- *   429  Rate limit (simulated)
- *   500  Server error (simulated)
- *   401  Unauthorized (simulated)
+ * GET /api/v1/visits
+ *   Returns all visits saved to the server
  */
 
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
+
 const app = express();
+const DATA_FILE = path.join(__dirname, 'data', 'visits.json');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -31,8 +32,35 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-// In-memory store — keyed by clientVisitId for idempotency.
+// Load existing visits from disk file on startup
 const visits = new Map();
+
+function loadVisitsFromDisk() {
+  try {
+    if (fs.existsSync(DATA_FILE)) {
+      const data = fs.readFileSync(DATA_FILE, 'utf8');
+      const array = JSON.parse(data || '[]');
+      for (const item of array) {
+        const key = item.clientVisitId;
+        visits.set(key, item);
+      }
+      console.log(`[mock] Loaded ${visits.size} visits from disk (${DATA_FILE})`);
+    }
+  } catch (err) {
+    console.error('[mock] Failed to read visits.json:', err.message);
+  }
+}
+
+function saveVisitsToDisk() {
+  try {
+    const array = Array.from(visits.values());
+    fs.writeFileSync(DATA_FILE, JSON.stringify(array, null, 2), 'utf8');
+  } catch (err) {
+    console.error('[mock] Failed to write visits.json:', err.message);
+  }
+}
+
+loadVisitsFromDisk();
 
 // Rate limit simulation counter.
 let requestCount = 0;
@@ -97,9 +125,10 @@ app.post('/api/v1/visits', (req, res) => {
     receivedAt: new Date().toISOString(),
   };
   visits.set(key, record);
+  saveVisitsToDisk();
 
-  // NOTE: We do NOT log customerName or notes to avoid capturing PII.
-  console.log(`[mock] Stored visit ${serverId} (client: ${clientVisitId})`);
+  // NOTE: We do NOT log customerName or notes to avoid capturing PII in terminal.
+  console.log(`[mock] Stored visit ${serverId} (client: ${clientVisitId}) -> saved to data/visits.json`);
 
   return res.status(201).json({
     serverId,
@@ -108,14 +137,21 @@ app.post('/api/v1/visits', (req, res) => {
   });
 });
 
+// List all visits stored on the mock server
+app.get('/api/v1/visits', (_, res) => {
+  res.json({
+    total: visits.size,
+    visits: Array.from(visits.values()),
+  });
+});
+
 // Health check
 app.get('/health', (_, res) => res.json({ status: 'ok', visits: visits.size }));
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`[mock] Field Visit Log mock server running on http://localhost:${PORT}`);
+  console.log(`[mock] Visits persisted to file: ${DATA_FILE}`);
   console.log(`[mock] Android emulator: use http://10.0.2.2:${PORT}`);
   console.log(`[mock] Physical device: use your LAN IP, e.g. http://192.168.x.x:${PORT}`);
-  console.log('[mock] Set SERVER_ERROR_EVERY=N to simulate a 500 every Nth request.');
-  console.log('[mock] Set RATE_LIMIT_EVERY=N to simulate a 429 every Nth request.');
 });

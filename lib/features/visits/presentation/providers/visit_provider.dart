@@ -36,6 +36,7 @@ class VisitProvider extends ChangeNotifier {
   bool _isOnline = false;
   SyncStatus? _statusFilter;
   bool _isSaving = false;
+  DateTime? _lastSyncTime;
 
   // ── Getters ───────────────────────────────────────────────────────────────
 
@@ -49,6 +50,7 @@ class VisitProvider extends ChangeNotifier {
   bool get isOnline => _isOnline;
   SyncStatus? get statusFilter => _statusFilter;
   bool get isSaving => _isSaving;
+  DateTime? get lastSyncTime => _lastSyncTime;
 
   int get totalCount => _visits.length;
   int get pendingCount =>
@@ -126,6 +128,7 @@ class VisitProvider extends ChangeNotifier {
     try {
       await _syncPendingVisits();
       await loadVisits();
+      _lastSyncTime = DateTime.now();
     } finally {
       _isSyncing = false;
       notifyListeners();

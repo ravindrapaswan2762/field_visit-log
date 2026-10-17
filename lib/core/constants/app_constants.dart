@@ -10,9 +10,9 @@ class AppConstants {
   static const int dbVersion = 1;
 
   // ── API ───────────────────────────────────────────────────────────────────
-  // For web/desktop, mock server is accessed via localhost:3000.
+  // For web/desktop, mock server is accessed via localhost:3001.
   // For Android emulator, 10.0.2.2 routes to the host machine.
-  static String get baseUrl => kIsWeb ? 'http://localhost:3000' : 'http://10.0.2.2:3000';
+  static String get baseUrl => kIsWeb ? 'http://localhost:3001' : 'http://10.0.2.2:3001';
   static const String visitsEndpoint = '/api/v1/visits';
 
   static const Duration httpTimeout = Duration(seconds: 15);
