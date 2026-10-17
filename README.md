@@ -4,6 +4,15 @@ A professional Android application for field employees to log customer visits of
 
 ---
 
+## 📱 App Screenshots
+
+| 1. Visit List | 2. Add Visit Form | 3. Visit Details |
+| :---: | :---: | :---: |
+| <img src="https://res.cloudinary.com/duylswwsj/image/upload/v1792233880/Screenshot_2026-10-17_at_4.09.27_PM_idwcr8.png" width="260" alt="Visit List Screen" /> | <img src="https://res.cloudinary.com/duylswwsj/image/upload/v1792233880/Screenshot_2026-10-17_at_4.09.59_PM_wtizbs.png" width="260" alt="Add Visit Form Screen" /> | <img src="https://res.cloudinary.com/duylswwsj/image/upload/v1792233880/Screenshot_2026-10-17_at_4.10.22_PM_oej5v6.png" width="260" alt="Visit Details Screen" /> |
+| *Real-time sync summary, status badges & filters* | *Offline-first form, validation & photo capture* | *Detailed metadata, sync audit & retry controls* |
+
+---
+
 ## Requirements
 
 | Tool              | Version      |
