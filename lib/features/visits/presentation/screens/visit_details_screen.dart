@@ -134,7 +134,7 @@ class _VisitDetailsContent extends StatelessWidget {
     final localTime = visit.createdAt.toLocal();
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 6, 16, 24),
+      padding: const EdgeInsets.fromLTRB(16, 6, 16, 36),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -142,7 +142,7 @@ class _VisitDetailsContent extends StatelessWidget {
           _buildProfileCard(context, localTime),
           const SizedBox(height: 12),
 
-          // ── 2. Four-Column Metrics Row ────────────────────────────────────
+          // ── 2. Four-Column Metrics Row (Zero Overflow Guaranteed) ────────
           _buildMetricsCard(context),
           const SizedBox(height: 12),
 
@@ -264,24 +264,29 @@ class _VisitDetailsContent extends StatelessWidget {
   Widget _buildAvatar() {
     if (visit.hasPhoto) {
       return Container(
-        width: 52,
-        height: 52,
+        width: 56,
+        height: 56,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
+          color: const Color(0xFFF1F5F9),
           border: Border.all(color: const Color(0xFFE2E8F0)),
         ),
         child: ClipOval(
-          child: kIsWeb
-              ? Image.network(
-                  visit.photoPath!,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => _buildLetterAvatar(),
-                )
-              : Image.file(
-                  File(visit.photoPath!),
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => _buildLetterAvatar(),
-                ),
+          child: SizedBox(
+            width: 56,
+            height: 56,
+            child: kIsWeb
+                ? Image.network(
+                    visit.photoPath!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => _buildLetterAvatar(),
+                  )
+                : Image.file(
+                    File(visit.photoPath!),
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => _buildLetterAvatar(),
+                  ),
+          ),
         ),
       );
     }
@@ -322,7 +327,7 @@ class _VisitDetailsContent extends StatelessWidget {
         : '—';
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -338,106 +343,131 @@ class _VisitDetailsContent extends StatelessWidget {
       child: IntrinsicHeight(
         child: Row(
           children: [
-            // Item 1: Visit ID
+            // Item 1: Visit ID (Wrapped in FittedBox to guarantee 0 overflow)
             Expanded(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Icon(Icons.article_outlined, size: 18, color: Color(0xFF2563EB)),
                   const SizedBox(height: 4),
-                  const Text('Visit ID', style: TextStyle(fontSize: 10.5, color: Color(0xFF64748B))),
+                  const FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text('Visit ID', style: TextStyle(fontSize: 10.5, color: Color(0xFF64748B))),
+                  ),
                   const SizedBox(height: 2),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'vst_$shortId',
-                        style: const TextStyle(
-                          fontSize: 10.5,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF0F172A),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'vst_$shortId',
+                          style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF0F172A),
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 2),
-                      GestureDetector(
-                        onTap: () {
-                          Clipboard.setData(ClipboardData(text: visit.id));
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Visit ID copied to clipboard'),
-                              duration: Duration(seconds: 1),
-                            ),
-                          );
-                        },
-                        child: const Icon(Icons.copy, size: 11, color: Color(0xFF94A3B8)),
-                      ),
-                    ],
+                        const SizedBox(width: 3),
+                        GestureDetector(
+                          onTap: () {
+                            Clipboard.setData(ClipboardData(text: visit.id));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Visit ID copied to clipboard'),
+                                duration: Duration(seconds: 1),
+                              ),
+                            );
+                          },
+                          child: const Icon(Icons.copy, size: 11, color: Color(0xFF94A3B8)),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-            const VerticalDivider(color: Color(0xFFE2E8F0), thickness: 1, width: 16),
+            const VerticalDivider(color: Color(0xFFE2E8F0), thickness: 1, width: 4),
 
-            // Item 2: Synced At
+            // Item 2: Synced At (Wrapped in FittedBox)
             Expanded(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Icon(Icons.sync, size: 18, color: Color(0xFF2563EB)),
                   const SizedBox(height: 4),
-                  const Text('Synced At', style: TextStyle(fontSize: 10.5, color: Color(0xFF64748B))),
+                  const FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text('Synced At', style: TextStyle(fontSize: 10.5, color: Color(0xFF64748B))),
+                  ),
                   const SizedBox(height: 2),
-                  Text(
-                    syncedAtFormatted,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF0F172A),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      syncedAtFormatted,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF0F172A),
+                        height: 1.15,
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-            const VerticalDivider(color: Color(0xFFE2E8F0), thickness: 1, width: 16),
+            const VerticalDivider(color: Color(0xFFE2E8F0), thickness: 1, width: 4),
 
-            // Item 3: Retry Count
+            // Item 3: Retry Count (Wrapped in FittedBox)
             Expanded(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Icon(Icons.cloud_upload_outlined, size: 18, color: Color(0xFF2563EB)),
                   const SizedBox(height: 4),
-                  const Text('Retry Count', style: TextStyle(fontSize: 10.5, color: Color(0xFF64748B))),
+                  const FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text('Retry Count', style: TextStyle(fontSize: 10.5, color: Color(0xFF64748B))),
+                  ),
                   const SizedBox(height: 2),
-                  Text(
-                    '${visit.retryCount}',
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF0F172A),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      '${visit.retryCount}',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF0F172A),
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-            const VerticalDivider(color: Color(0xFFE2E8F0), thickness: 1, width: 16),
+            const VerticalDivider(color: Color(0xFFE2E8F0), thickness: 1, width: 4),
 
-            // Item 4: Next Retry
+            // Item 4: Next Retry (Wrapped in FittedBox)
             Expanded(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Icon(Icons.access_time, size: 18, color: Color(0xFF2563EB)),
                   const SizedBox(height: 4),
-                  const Text('Next Retry', style: TextStyle(fontSize: 10.5, color: Color(0xFF64748B))),
+                  const FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text('Next Retry', style: TextStyle(fontSize: 10.5, color: Color(0xFF64748B))),
+                  ),
                   const SizedBox(height: 2),
-                  Text(
-                    nextRetryFormatted,
-                    style: TextStyle(
-                      fontSize: nextRetryFormatted == '—' ? 14 : 11,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF0F172A),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      nextRetryFormatted,
+                      style: TextStyle(
+                        fontSize: nextRetryFormatted == '—' ? 13 : 10.5,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF0F172A),
+                      ),
                     ),
                   ),
                 ],
@@ -550,22 +580,31 @@ class _VisitDetailsContent extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               child: Row(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: SizedBox(
-                      width: 52,
-                      height: 52,
-                      child: kIsWeb
-                          ? Image.network(
-                              visit.photoPath!,
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
-                            )
-                          : Image.file(
-                              File(visit.photoPath!),
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
-                            ),
+                  Container(
+                    width: 56,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF1F5F9),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(7),
+                      child: SizedBox(
+                        width: 56,
+                        height: 50,
+                        child: kIsWeb
+                            ? Image.network(
+                                visit.photoPath!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+                              )
+                            : Image.file(
+                                File(visit.photoPath!),
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+                              ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -722,36 +761,41 @@ class _VisitDetailsContent extends StatelessWidget {
               ),
               if (visit.syncedAt != null) ...[
                 const SizedBox(width: 6),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF0FDF4),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: const Color(0xFFDCFCE7)),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.access_time, size: 13, color: Color(0xFF15803D)),
-                      const SizedBox(width: 5),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                Flexible(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF0FDF4),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: const Color(0xFFDCFCE7)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Text(
-                            'Synced At',
-                            style: TextStyle(fontSize: 9.5, color: Color(0xFF15803D)),
-                          ),
-                          Text(
-                            '${_dateFormat.format(visit.syncedAt!.toLocal())} • ${_timeFormat.format(visit.syncedAt!.toLocal())}',
-                            style: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xFF15803D),
-                            ),
+                          const Icon(Icons.access_time, size: 12, color: Color(0xFF15803D)),
+                          const SizedBox(width: 4),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Synced At',
+                                style: TextStyle(fontSize: 9, color: Color(0xFF15803D)),
+                              ),
+                              Text(
+                                '${_dateFormat.format(visit.syncedAt!.toLocal())} • ${_timeFormat.format(visit.syncedAt!.toLocal())}',
+                                style: const TextStyle(
+                                  fontSize: 9.5,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF15803D),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ],

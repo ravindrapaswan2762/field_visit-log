@@ -56,25 +56,34 @@ class _VisitListScreenState extends State<VisitListScreen> {
       backgroundColor: const Color(0xFFF8FAFC),
       elevation: 0,
       scrolledUnderElevation: 0,
+      leadingWidth: 42,
+      titleSpacing: 0,
       leading: IconButton(
+        padding: const EdgeInsets.only(left: 12),
+        constraints: const BoxConstraints(),
         icon: const Icon(Icons.menu, color: Color(0xFF0F172A), size: 22),
         onPressed: () {},
         tooltip: 'Menu',
       ),
-      title: const Text(
-        'Field Visit Log',
-        style: TextStyle(
-          color: Color(0xFF0F172A),
-          fontWeight: FontWeight.w700,
-          fontSize: 18,
-          letterSpacing: -0.2,
+      title: const FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.centerLeft,
+        child: Text(
+          'Field Visit Log',
+          style: TextStyle(
+            color: Color(0xFF0F172A),
+            fontWeight: FontWeight.w700,
+            fontSize: 18,
+            letterSpacing: -0.3,
+          ),
+          maxLines: 1,
         ),
       ),
       actions: [
-        // Connectivity Status Pill
+        // Connectivity Status Pill (ultra-compact to guarantee zero title truncation)
         Container(
-          margin: const EdgeInsets.symmetric(vertical: 12),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          margin: const EdgeInsets.symmetric(vertical: 13),
+          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3.5),
           decoration: BoxDecoration(
             color: provider.isOnline ? const Color(0xFFF0FDF4) : const Color(0xFFF1F5F9),
             borderRadius: BorderRadius.circular(20),
@@ -86,34 +95,34 @@ class _VisitListScreenState extends State<VisitListScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 7,
-                height: 7,
+                width: 6,
+                height: 6,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: provider.isOnline ? const Color(0xFF16A34A) : const Color(0xFF94A3B8),
                 ),
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: 4),
               Text(
                 provider.isOnline ? 'Online' : 'Offline',
                 style: TextStyle(
                   color: provider.isOnline ? const Color(0xFF15803D) : const Color(0xFF64748B),
-                  fontSize: 12,
+                  fontSize: 11,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: 4),
 
         // Sync Pill Button
         InkWell(
           onTap: provider.isSyncing ? null : provider.syncNow,
           borderRadius: BorderRadius.circular(20),
           child: Container(
-            margin: const EdgeInsets.symmetric(vertical: 12),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            margin: const EdgeInsets.symmetric(vertical: 13),
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3.5),
             decoration: BoxDecoration(
               color: const Color(0xFFEFF6FF),
               borderRadius: BorderRadius.circular(20),
@@ -124,8 +133,8 @@ class _VisitListScreenState extends State<VisitListScreen> {
               children: [
                 provider.isSyncing
                     ? const SizedBox(
-                        width: 14,
-                        height: 14,
+                        width: 12,
+                        height: 12,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                           valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2563EB)),
@@ -133,15 +142,15 @@ class _VisitListScreenState extends State<VisitListScreen> {
                       )
                     : const Icon(
                         Icons.sync,
-                        size: 15,
+                        size: 13,
                         color: Color(0xFF2563EB),
                       ),
-                const SizedBox(width: 4),
+                const SizedBox(width: 3),
                 const Text(
                   'Sync',
                   style: TextStyle(
                     color: Color(0xFF2563EB),
-                    fontSize: 12,
+                    fontSize: 11,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -152,11 +161,13 @@ class _VisitListScreenState extends State<VisitListScreen> {
 
         // More options
         IconButton(
-          icon: const Icon(Icons.more_vert, color: Color(0xFF475569), size: 20),
+          icon: const Icon(Icons.more_vert, color: Color(0xFF475569), size: 19),
           onPressed: () {},
           tooltip: 'More',
+          padding: const EdgeInsets.symmetric(horizontal: 2),
+          constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
         ),
-        const SizedBox(width: 4),
+        const SizedBox(width: 6),
       ],
     );
   }
@@ -176,7 +187,7 @@ class _VisitListScreenState extends State<VisitListScreen> {
     final lastSyncText = _formatLastSync(provider);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: const BoxDecoration(
         color: Color(0xFFF1F5F9),
         border: Border(
@@ -187,8 +198,8 @@ class _VisitListScreenState extends State<VisitListScreen> {
         top: false,
         child: Row(
           children: [
-            const Icon(Icons.cloud_outlined, size: 20, color: Color(0xFF64748B)),
-            const SizedBox(width: 8),
+            const Icon(Icons.cloud_outlined, size: 18, color: Color(0xFF64748B)),
+            const SizedBox(width: 6),
             Expanded(
               child: Text(
                 'Last sync: $lastSyncText',
@@ -206,18 +217,18 @@ class _VisitListScreenState extends State<VisitListScreen> {
               onPressed: provider.isSyncing ? null : provider.syncNow,
               icon: provider.isSyncing
                   ? const SizedBox(
-                      width: 14,
-                      height: 14,
+                      width: 13,
+                      height: 13,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
                     )
-                  : const Icon(Icons.sync, size: 16, color: Colors.white),
+                  : const Icon(Icons.sync, size: 15, color: Colors.white),
               label: const Text(
                 'Sync Now',
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: 12.5,
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
                 ),
@@ -225,7 +236,7 @@ class _VisitListScreenState extends State<VisitListScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF1D4ED8),
                 elevation: 0,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -245,7 +256,7 @@ class _VisitListScreenState extends State<VisitListScreen> {
             .fold<DateTime?>(null, (prev, curr) => prev == null || curr.isAfter(prev) ? curr : prev) ??
         DateTime.now();
 
-    return DateFormat('MMM d, yyyy · hh:mm a').format(time.toLocal());
+    return DateFormat('MMM d, yyyy • hh:mm a').format(time.toLocal());
   }
 }
 
@@ -256,7 +267,7 @@ class _MetricsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 6, 16, 10),
+      margin: const EdgeInsets.fromLTRB(16, 6, 16, 8),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -265,8 +276,8 @@ class _MetricsCard extends StatelessWidget {
         boxShadow: const [
           BoxShadow(
             color: Color(0x060F172A),
-            blurRadius: 4,
-            offset: Offset(0, 1),
+            blurRadius: 6,
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -286,23 +297,32 @@ class _MetricsCard extends StatelessWidget {
                   child: const Icon(Icons.article_outlined, color: Colors.white, size: 18),
                 ),
                 const SizedBox(width: 8),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      '${provider.totalCount}',
-                      style: const TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF0F172A),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          '${provider.totalCount}',
+                          style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF0F172A),
+                          ),
+                        ),
                       ),
-                    ),
-                    const Text(
-                      'Total Visits',
-                      style: TextStyle(fontSize: 10.5, color: Color(0xFF64748B)),
-                    ),
-                  ],
+                      const SizedBox(height: 1),
+                      const FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          'Total Visits',
+                          style: TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -319,26 +339,35 @@ class _MetricsCard extends StatelessWidget {
                     color: Color(0xFFF59E0B),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.access_time, color: Colors.white, size: 18),
+                  child: const Icon(Icons.access_time_filled, color: Colors.white, size: 18),
                 ),
                 const SizedBox(width: 8),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      '${provider.pendingCount}',
-                      style: const TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF0F172A),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          '${provider.pendingCount}',
+                          style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF0F172A),
+                          ),
+                        ),
                       ),
-                    ),
-                    const Text(
-                      'Pending',
-                      style: TextStyle(fontSize: 10.5, color: Color(0xFF64748B)),
-                    ),
-                  ],
+                      const SizedBox(height: 1),
+                      const FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          'Pending',
+                          style: TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -358,23 +387,32 @@ class _MetricsCard extends StatelessWidget {
                   child: const Icon(Icons.check, color: Colors.white, size: 18),
                 ),
                 const SizedBox(width: 8),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      '${provider.syncedCount}',
-                      style: const TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF0F172A),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          '${provider.syncedCount}',
+                          style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF0F172A),
+                          ),
+                        ),
                       ),
-                    ),
-                    const Text(
-                      'Synced',
-                      style: TextStyle(fontSize: 10.5, color: Color(0xFF64748B)),
-                    ),
-                  ],
+                      const SizedBox(height: 1),
+                      const FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          'Synced',
+                          style: TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -461,13 +499,13 @@ class _PillFilter extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 15, color: fgColor),
-            const SizedBox(width: 6),
+            Icon(icon, size: 14, color: fgColor),
+            const SizedBox(width: 5),
             Text(
               label,
               style: TextStyle(
                 color: fgColor,
-                fontSize: 12.5,
+                fontSize: 12,
                 fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
               ),
             ),

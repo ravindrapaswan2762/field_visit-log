@@ -295,12 +295,15 @@ class _VisitFormState extends State<VisitForm> {
                       child: OutlinedButton.icon(
                         onPressed: widget.isLoading ? null : () => _pickPhoto(ImageSource.gallery),
                         icon: const Icon(Icons.image_outlined, size: 17, color: Color(0xFF2563EB)),
-                        label: const Text(
-                          'Choose from Gallery',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF2563EB),
+                        label: const FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'Choose from Gallery',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF2563EB),
+                            ),
                           ),
                         ),
                         style: OutlinedButton.styleFrom(
@@ -317,12 +320,15 @@ class _VisitFormState extends State<VisitForm> {
                       child: OutlinedButton.icon(
                         onPressed: widget.isLoading ? null : () => _pickPhoto(ImageSource.camera),
                         icon: const Icon(Icons.camera_alt_outlined, size: 17, color: Color(0xFF2563EB)),
-                        label: const Text(
-                          'Take Photo',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF2563EB),
+                        label: const FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'Take Photo',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF2563EB),
+                            ),
                           ),
                         ),
                         style: OutlinedButton.styleFrom(
@@ -375,33 +381,36 @@ class _VisitFormState extends State<VisitForm> {
           const SizedBox(height: 14),
 
           // ── Save Visit Button ─────────────────────────────────────────────
-          ElevatedButton.icon(
-            key: const Key('save_visit_button'),
-            onPressed: widget.isLoading ? null : _submit,
-            icon: widget.isLoading
-                ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  )
-                : const Icon(Icons.article_outlined, size: 18, color: Colors.white),
-            label: Text(
-              widget.isLoading ? 'Saving…' : 'Save Visit',
-              style: const TextStyle(
-                fontSize: 14.5,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
+          SizedBox(
+            width: double.infinity,
+            height: 48,
+            child: ElevatedButton.icon(
+              key: const Key('save_visit_button'),
+              onPressed: widget.isLoading ? null : _submit,
+              icon: widget.isLoading
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  : const Icon(Icons.article_outlined, size: 18, color: Colors.white),
+              label: Text(
+                widget.isLoading ? 'Saving…' : 'Save Visit',
+                style: const TextStyle(
+                  fontSize: 14.5,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
               ),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF2563EB),
-              elevation: 0,
-              padding: const EdgeInsets.symmetric(vertical: 13),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2563EB),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
           ),

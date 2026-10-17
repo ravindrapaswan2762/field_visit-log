@@ -16,7 +16,11 @@ class AddVisitScreen extends StatelessWidget {
         backgroundColor: const Color(0xFFF8FAFC),
         elevation: 0,
         scrolledUnderElevation: 0,
+        leadingWidth: 42,
+        titleSpacing: 0,
         leading: IconButton(
+          padding: const EdgeInsets.only(left: 12),
+          constraints: const BoxConstraints(),
           icon: const Icon(Icons.arrow_back, color: Color(0xFF0F172A)),
           onPressed: () => Navigator.pop(context),
         ),
@@ -45,8 +49,8 @@ class AddVisitScreen extends StatelessWidget {
         ),
         actions: [
           Container(
-            margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            margin: const EdgeInsets.symmetric(vertical: 13, horizontal: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
             decoration: BoxDecoration(
               color: provider.isOnline == true ? const Color(0xFFF0FDF4) : const Color(0xFFF1F5F9),
               borderRadius: BorderRadius.circular(20),
@@ -58,19 +62,19 @@ class AddVisitScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 7,
-                  height: 7,
+                  width: 6.5,
+                  height: 6.5,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: provider.isOnline == true ? const Color(0xFF16A34A) : const Color(0xFF94A3B8),
                   ),
                 ),
-                const SizedBox(width: 6),
+                const SizedBox(width: 5),
                 Text(
                   provider.isOnline == true ? 'Online' : 'Offline',
                   style: TextStyle(
                     color: provider.isOnline == true ? const Color(0xFF15803D) : const Color(0xFF64748B),
-                    fontSize: 12,
+                    fontSize: 11.5,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -81,7 +85,7 @@ class AddVisitScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 40),
           child: VisitForm(
             isLoading: provider.isSaving,
             onSave: ({

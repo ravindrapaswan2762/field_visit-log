@@ -15,7 +15,7 @@ class VisitCard extends StatelessWidget {
   final Visit visit;
   final VoidCallback onTap;
 
-  static final _dateFormat = DateFormat('MMM d, yyyy · hh:mm a');
+  static final _dateFormat = DateFormat('MMM d, yyyy • hh:mm a');
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +29,9 @@ class VisitCard extends StatelessWidget {
         border: Border.all(color: const Color(0xFFE2E8F0)),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x080F172A),
-            blurRadius: 4,
-            offset: Offset(0, 1),
+            color: Color(0x060F172A),
+            blurRadius: 6,
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -55,9 +55,10 @@ class VisitCard extends StatelessWidget {
                       Text(
                         visit.customerName,
                         style: const TextStyle(
-                          fontSize: 14.5,
+                          fontSize: 15,
                           fontWeight: FontWeight.w700,
                           color: Color(0xFF0F172A),
+                          letterSpacing: -0.1,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -77,6 +78,7 @@ class VisitCard extends StatelessWidget {
                               style: const TextStyle(
                                 fontSize: 11.5,
                                 color: Color(0xFF64748B),
+                                fontWeight: FontWeight.w400,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -90,6 +92,7 @@ class VisitCard extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 12.5,
                           color: Color(0xFF64748B),
+                          height: 1.25,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -109,16 +112,19 @@ class VisitCard extends StatelessWidget {
                         const SizedBox(width: 2),
                         const Icon(
                           Icons.chevron_right,
-                          size: 18,
+                          size: 16,
                           color: Color(0xFF94A3B8),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
-                    const Icon(
-                      Icons.more_vert,
-                      size: 18,
-                      color: Color(0xFF94A3B8),
+                    const SizedBox(height: 6),
+                    const Padding(
+                      padding: EdgeInsets.only(right: 2),
+                      child: Icon(
+                        Icons.more_vert,
+                        size: 16,
+                        color: Color(0xFF94A3B8),
+                      ),
                     ),
                   ],
                 ),
@@ -143,32 +149,37 @@ class _VisitAvatar extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
           Container(
-            width: 46,
-            height: 46,
+            width: 48,
+            height: 48,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
+              color: const Color(0xFFF1F5F9),
               border: Border.all(color: const Color(0xFFE2E8F0)),
             ),
             child: ClipOval(
-              child: kIsWeb
-                  ? Image.network(
-                      visit.photoPath!,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => _buildLetterAvatar(),
-                    )
-                  : Image.file(
-                      File(visit.photoPath!),
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => _buildLetterAvatar(),
-                    ),
+              child: SizedBox(
+                width: 48,
+                height: 48,
+                child: kIsWeb
+                    ? Image.network(
+                        visit.photoPath!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => _buildLetterAvatar(),
+                      )
+                    : Image.file(
+                        File(visit.photoPath!),
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => _buildLetterAvatar(),
+                      ),
+              ),
             ),
           ),
           Positioned(
-            right: -2,
-            bottom: -2,
+            right: -1,
+            bottom: -1,
             child: Container(
-              width: 17,
-              height: 17,
+              width: 16,
+              height: 16,
               decoration: BoxDecoration(
                 color: const Color(0xFF0F172A),
                 shape: BoxShape.circle,
@@ -176,7 +187,7 @@ class _VisitAvatar extends StatelessWidget {
               ),
               child: const Icon(
                 Icons.image,
-                size: 9,
+                size: 8,
                 color: Colors.white,
               ),
             ),
@@ -196,8 +207,8 @@ class _VisitAvatar extends StatelessWidget {
     final (bg, fg) = _pickColor(initial);
 
     return Container(
-      width: 46,
-      height: 46,
+      width: 48,
+      height: 48,
       decoration: BoxDecoration(
         color: bg,
         shape: BoxShape.circle,
@@ -208,7 +219,7 @@ class _VisitAvatar extends StatelessWidget {
         style: TextStyle(
           color: fg,
           fontSize: 18,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );
