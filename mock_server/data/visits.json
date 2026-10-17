@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "serverId": "srv-1792233420125-ezexre",
+    "clientVisitId": "9f0312b4-6dce-4966-8bb3-89c4fd4926a7",
+    "customerName": "Metro Health Logistics",
+    "notes": "Met with procurement director Sarah regarding the annual medical supply delivery agreement. Addressed refrigerated shipment SLA benchmarks and finalized the renewed 12-month tier pricing. Follow-up proposal to be delivered by Friday.",
+    "visitedAt": "2026-10-17T10:36:59.924Z",
+    "photoReference": null,
+    "receivedAt": "2026-10-17T10:37:00.125Z"
+  },
+  {
+    "serverId": "srv-1792233455372-xl4c4j",
+    "clientVisitId": "259919a8-0df9-4662-a701-940d6ae6628b",
+    "customerName": "Apex Retailers \u2014 Downtown Branch",
+    "notes": "Conducted quarterly store merchandising and display audit. Reviewed Point-of-Sale terminal performance with store manager Michael. Verified end-cap promotional inventory levels and confirmed restocking schedule for next Tuesday.",
+    "visitedAt": "2026-10-17T10:37:35.295Z",
+    "photoReference": null,
+    "receivedAt": "2026-10-17T10:37:35.372Z"
+  },
+  {
+    "serverId": "srv-1792233492866-bjjbyw",
+    "clientVisitId": "30c05ce6-2714-4c6d-a73a-96c0332c9611",
+    "customerName": "Evergreen Solar Solutions",
+    "notes": "Routine site visit to warehouse facility B. Inspected rooftop inverter unit serial numbers and checked battery rack safety switches. All inspection metrics passed within operational thresholds. Maintenance log updated on-site.",
+    "visitedAt": "2026-10-17T10:38:12.744Z",
+    "photoReference": null,
+    "receivedAt": "2026-10-17T10:38:12.866Z"
+  },
+  {
+    "serverId": "srv-1792233519919-15dc0h",
+    "clientVisitId": "6db9b711-4ead-45a6-8f89-b7f703d46364",
+    "customerName": "Vanguard Construction Group",
+    "notes": "Onboarded site supervisor David on the material tracking workflow. Demonstrated field material delivery checklists and assisted the dispatch team in configuring site access codes for the new heavy machinery fleet.",
+    "visitedAt": "2026-10-17T10:38:39.862Z",
+    "photoReference": null,
+    "receivedAt": "2026-10-17T10:38:39.919Z"
+  }
+]
