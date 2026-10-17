@@ -12,7 +12,22 @@ class AppConstants {
   // ── API ───────────────────────────────────────────────────────────────────
   // For web/desktop, mock server is accessed via localhost:3001.
   // For Android emulator, 10.0.2.2 routes to the host machine.
-  static String get baseUrl => kIsWeb ? 'http://localhost:3001' : 'http://10.0.2.2:3001';
+  static String? _customBaseUrl;
+
+  static String get baseUrl {
+    if (_customBaseUrl != null && _customBaseUrl!.isNotEmpty) {
+      return _customBaseUrl!;
+    }
+    return kIsWeb ? 'http://localhost:3001' : 'http://10.0.2.2:3001';
+  }
+
+  static void setBaseUrl(String url) {
+    var trimmed = url.trim();
+    if (trimmed.endsWith('/')) {
+      trimmed = trimmed.substring(0, trimmed.length - 1);
+    }
+    _customBaseUrl = trimmed;
+  }
   static const String visitsEndpoint = '/api/v1/visits';
 
   static const Duration httpTimeout = Duration(seconds: 15);

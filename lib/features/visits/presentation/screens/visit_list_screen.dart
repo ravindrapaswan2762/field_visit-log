@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -80,41 +81,54 @@ class _VisitListScreenState extends State<VisitListScreen> {
         ),
       ),
       actions: [
-        // Connectivity Status Pill
-        Container(
-          margin: const EdgeInsets.symmetric(vertical: 16),
-          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
-          decoration: BoxDecoration(
-            color: provider.isOnline
-                ? const Color(0xFFE8F7EE)
-                : const Color(0xFFF1F5F9),
+        // Connectivity Status Pill (tap to configure server URL)
+        Tooltip(
+          message: 'Tap to configure server URL',
+          child: InkWell(
             borderRadius: BorderRadius.circular(20),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 7,
-                height: 7,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
+            onTap: () => _showServerSettingsDialog(context),
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+              decoration: BoxDecoration(
+                color: provider.isOnline
+                    ? const Color(0xFFE8F7EE)
+                    : const Color(0xFFF1F5F9),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
                   color: provider.isOnline
-                      ? const Color(0xFF16A34A)
-                      : const Color(0xFF94A3B8),
+                      ? const Color(0xFFBBF7D0)
+                      : const Color(0xFFE2E8F0),
+                  width: 0.8,
                 ),
               ),
-              const SizedBox(width: 5),
-              Text(
-                provider.isOnline ? 'Online' : 'Offline',
-                style: TextStyle(
-                  color: provider.isOnline
-                      ? const Color(0xFF15803D)
-                      : const Color(0xFF64748B),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 7,
+                    height: 7,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: provider.isOnline
+                          ? const Color(0xFF16A34A)
+                          : const Color(0xFF94A3B8),
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  Text(
+                    provider.isOnline ? 'Online' : 'Offline',
+                    style: TextStyle(
+                      color: provider.isOnline
+                          ? const Color(0xFF15803D)
+                          : const Color(0xFF64748B),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
         const SizedBox(width: 8),
@@ -253,6 +267,93 @@ class _VisitListScreenState extends State<VisitListScreen> {
         DateTime.now();
 
     return DateFormat('MMM d, yyyy • hh:mm a').format(time.toLocal());
+  }
+
+  void _showServerSettingsDialog(BuildContext context) {
+    final controller = TextEditingController(text: AppConstants.baseUrl);
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Row(
+          children: [
+            Icon(Icons.dns_outlined, color: Color(0xFF1D4ED8), size: 24),
+            SizedBox(width: 10),
+            Text(
+              'Server Endpoint',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'For a physical phone, set your desktop Wi-Fi IP (e.g. http://192.168.1.5:3001) or localhost if using adb reverse.',
+              style: TextStyle(
+                fontSize: 13,
+                color: Color(0xFF64748B),
+                height: 1.35,
+              ),
+            ),
+            const SizedBox(height: 14),
+            TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                labelText: 'Base URL',
+                hintText: 'http://192.168.x.x:3001',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 12,
+                ),
+              ),
+              keyboardType: TextInputType.url,
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                ActionChip(
+                  label: const Text('Emulator (10.0.2.2)',
+                      style: TextStyle(fontSize: 11)),
+                  onPressed: () => controller.text = 'http://10.0.2.2:3001',
+                ),
+                ActionChip(
+                  label: const Text('Localhost / USB',
+                      style: TextStyle(fontSize: 11)),
+                  onPressed: () => controller.text = 'http://localhost:3001',
+                ),
+              ],
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () {
+              AppConstants.setBaseUrl(controller.text);
+              Navigator.pop(ctx);
+              context.read<VisitProvider>().syncNow();
+            },
+            style: FilledButton.styleFrom(
+              backgroundColor: const Color(0xFF1D4ED8),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Text('Save & Sync'),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -673,5 +774,5 @@ class _EmptyState extends StatelessWidget {
         ),
       ),
     );
-  }
+}
 }
