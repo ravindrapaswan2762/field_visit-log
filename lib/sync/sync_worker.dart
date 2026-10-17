@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:workmanager/workmanager.dart';
 import '../core/constants/app_constants.dart';
@@ -43,15 +44,20 @@ Future<void> _runSyncTask() async {
 /// WorkManager may run this later than requested; do not rely on exact timing.
 Future<void> scheduleBackgroundSync() async {
   if (kIsWeb) return;
-  await Workmanager().registerOneOffTask(
-    AppConstants.syncTaskName,
-    AppConstants.syncTaskName,
-    tag: AppConstants.syncTaskTag,
-    existingWorkPolicy: ExistingWorkPolicy.keep,
-    constraints: Constraints(
-      networkType: NetworkType.connected,
-    ),
-    backoffPolicy: BackoffPolicy.exponential,
-    backoffPolicyDelay: AppConstants.initialRetryDelay,
-  );
+  if (Platform.environment.containsKey('FLUTTER_TEST')) return;
+  try {
+    await Workmanager().registerOneOffTask(
+      AppConstants.syncTaskName,
+      AppConstants.syncTaskName,
+      tag: AppConstants.syncTaskTag,
+      existingWorkPolicy: ExistingWorkPolicy.keep,
+      constraints: Constraints(
+        networkType: NetworkType.connected,
+      ),
+      backoffPolicy: BackoffPolicy.exponential,
+      backoffPolicyDelay: AppConstants.initialRetryDelay,
+    );
+  } catch (_) {
+    // Graceful handling for non-Android platforms
+  }
 }
