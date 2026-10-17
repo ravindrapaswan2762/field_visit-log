@@ -20,12 +20,14 @@ void main() {
   setUp(() {
     mockProvider = MockVisitProvider();
     when(() => mockProvider.isSaving).thenReturn(false);
+    when(() => mockProvider.isOnline).thenReturn(true);
   });
 
   testWidgets('shows validation errors on empty submit', (tester) async {
     await tester.pumpWidget(_wrap(mockProvider));
     await tester.pump();
 
+    await tester.ensureVisible(find.byKey(const Key('save_visit_button')));
     await tester.tap(find.byKey(const Key('save_visit_button')));
     await tester.pump();
 
@@ -38,6 +40,7 @@ void main() {
     await tester.pump();
 
     await tester.enterText(find.byKey(const Key('customer_name_field')), 'A');
+    await tester.ensureVisible(find.byKey(const Key('save_visit_button')));
     await tester.tap(find.byKey(const Key('save_visit_button')));
     await tester.pump();
 
@@ -65,6 +68,7 @@ void main() {
       find.byKey(const Key('notes_field')),
       'Visited the main office and reviewed contract terms.',
     );
+    await tester.ensureVisible(find.byKey(const Key('save_visit_button')));
     await tester.tap(find.byKey(const Key('save_visit_button')));
     await tester.pump();
 
