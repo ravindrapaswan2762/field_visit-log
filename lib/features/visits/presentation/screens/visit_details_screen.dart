@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -212,6 +213,17 @@ class _VisitDetailsContent extends StatelessWidget {
   }
 
   Widget _buildPhoto(String path) {
+    if (kIsWeb) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Image.network(
+          path,
+          fit: BoxFit.cover,
+          width: double.infinity,
+          errorBuilder: (_, __, ___) => const Text('Could not display photo.'),
+        ),
+      );
+    }
     if (!File(path).existsSync()) {
       return const Padding(
         padding: EdgeInsets.symmetric(vertical: 8),

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -26,6 +27,10 @@ class PhotoService {
       );
       if (picked == null) return null;
 
+      if (kIsWeb) {
+        return picked.path;
+      }
+
       final dir = await getApplicationDocumentsDirectory();
       final photosDir = Directory(p.join(dir.path, 'visit_photos'));
       if (!photosDir.existsSync()) {
@@ -51,6 +56,7 @@ class PhotoService {
   /// Returns true if the file at [path] exists on disk.
   bool photoExists(String? path) {
     if (path == null || path.isEmpty) return false;
+    if (kIsWeb) return true;
     return File(path).existsSync();
   }
 }

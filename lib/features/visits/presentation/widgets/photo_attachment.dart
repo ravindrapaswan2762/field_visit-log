@@ -1,8 +1,12 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../core/services/photo_service.dart';
 
+/// Self-contained widget that handles photo attachment for a visit.
+/// Shows a button to pick a photo if none is attached, or a preview
+/// thumbnail with a remove action if one is already selected.
 class PhotoAttachment extends StatelessWidget {
   const PhotoAttachment({
     super.key,
@@ -19,12 +23,13 @@ class PhotoAttachment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (photoPath != null && File(photoPath!).existsSync()) {
+    if (photoPath != null && photoPath!.isNotEmpty) {
       return _PhotoPreview(
         path: photoPath!,
         onRemove: enabled ? onPhotoRemoved : null,
       );
     }
+
     return _PhotoPickerButton(
       enabled: enabled,
       onPhotoSelected: onPhotoSelected,
@@ -39,17 +44,27 @@ class _PhotoPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: Image.file(
+    final imageWidget = kIsWeb
+        ? Image.network(
+            path,
+            height: 180,
+            width: double.infinity,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) => const _MissingPhoto(),
+          )
+        : Image.file(
             File(path),
             height: 180,
             width: double.infinity,
             fit: BoxFit.cover,
             errorBuilder: (_, __, ___) => const _MissingPhoto(),
-          ),
+          );
+
+    return Stack(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: imageWidget,
         ),
         if (onRemove != null)
           Positioned(
@@ -76,6 +91,7 @@ class _PhotoPickerButton extends StatelessWidget {
     required this.enabled,
     required this.onPhotoSelected,
   });
+
   final bool enabled;
   final ValueChanged<String?> onPhotoSelected;
 
@@ -97,24 +113,27 @@ class _PhotoPickerButton extends StatelessWidget {
   void _showSourceDialog(BuildContext context) {
     showModalBottomSheet<void>(
       context: context,
-      builder: (_) => SafeArea(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const Icon(Icons.photo_camera),
+              leading: const Icon(Icons.camera_alt_outlined),
               title: const Text('Take a photo'),
               onTap: () {
-                Navigator.pop(context);
-                _pick(context, ImageSource.camera);
+                Navigator.of(ctx).pop();
+                _pick(ImageSource.camera);
               },
             ),
             ListTile(
-              leading: const Icon(Icons.photo_library),
+              leading: const Icon(Icons.photo_library_outlined),
               title: const Text('Choose from gallery'),
               onTap: () {
-                Navigator.pop(context);
-                _pick(context, ImageSource.gallery);
+                Navigator.of(ctx).pop();
+                _pick(ImageSource.gallery);
               },
             ),
           ],
@@ -123,10 +142,12 @@ class _PhotoPickerButton extends StatelessWidget {
     );
   }
 
-  Future<void> _pick(BuildContext context, ImageSource source) async {
+  Future<void> _pick(ImageSource source) async {
     final service = PhotoService();
     final path = await service.pickAndSavePhoto(source: source);
-    onPhotoSelected(path);
+    if (path != null) {
+      onPhotoSelected(path);
+    }
   }
 }
 
@@ -136,10 +157,19 @@ class _MissingPhoto extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100,
-      color: Theme.of(context).colorScheme.surfaceContainerHighest,
-      child: const Center(
-        child: Icon(Icons.broken_image_outlined, size: 40),
+      height: 180,
+      color: Colors.grey.shade200,
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.broken_image_outlined, color: Colors.grey.shade600, size: 36),
+          const SizedBox(height: 8),
+          Text(
+            'Photo could not be loaded',
+            style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+          ),
+        ],
       ),
     );
   }

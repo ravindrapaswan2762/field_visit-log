@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:workmanager/workmanager.dart';
 import '../core/constants/app_constants.dart';
 import '../core/database/app_database.dart';
@@ -41,6 +42,7 @@ Future<void> _runSyncTask() async {
 /// Schedules a one-off background sync task with network constraints.
 /// WorkManager may run this later than requested; do not rely on exact timing.
 Future<void> scheduleBackgroundSync() async {
+  if (kIsWeb) return;
   await Workmanager().registerOneOffTask(
     AppConstants.syncTaskName,
     AppConstants.syncTaskName,

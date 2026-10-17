@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 /// Application-wide constants.
 /// Never store secrets, tokens, or PII here.
 class AppConstants {
@@ -8,9 +10,9 @@ class AppConstants {
   static const int dbVersion = 1;
 
   // ── API ───────────────────────────────────────────────────────────────────
-  // For Android emulator use 10.0.2.2 to reach the host machine.
-  // For a physical device, replace with your machine's LAN IP (e.g. 192.168.x.x).
-  static const String baseUrl = 'http://10.0.2.2:3000';
+  // For web/desktop, mock server is accessed via localhost:3000.
+  // For Android emulator, 10.0.2.2 routes to the host machine.
+  static String get baseUrl => kIsWeb ? 'http://localhost:3000' : 'http://10.0.2.2:3000';
   static const String visitsEndpoint = '/api/v1/visits';
 
   static const Duration httpTimeout = Duration(seconds: 15);

@@ -37,6 +37,7 @@ dependencies:
   intl: ^0.19.0
 
   cupertino_icons: ^1.0.8
+  sqflite_common_ffi_web: ^1.1.1
 
 dev_dependencies:
   flutter_test:
