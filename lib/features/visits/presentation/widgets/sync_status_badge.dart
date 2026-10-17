@@ -8,25 +8,25 @@ class SyncStatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (bg, textColor, icon, label) = _config();
+    final (bg, border, fg, icon, label) = _config();
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4.5),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: border),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 13, color: textColor),
-          const SizedBox(width: 4),
+          Icon(icon, size: 14, color: fg),
+          const SizedBox(width: 5),
           Text(
             label,
             style: TextStyle(
-              color: textColor,
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.2,
+              color: fg,
+              fontSize: 11.5,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],
@@ -34,33 +34,38 @@ class SyncStatusBadge extends StatelessWidget {
     );
   }
 
-  (Color, Color, IconData, String) _config() {
+  // (background, border, foreground, icon, label)
+  (Color, Color, Color, IconData, String) _config() {
     switch (status) {
       case SyncStatus.synced:
         return (
-          const Color(0xFFDCFCE7),
-          const Color(0xFF15803D),
+          const Color(0xFFE5F6EC),
+          const Color(0xFFD3EEDD),
+          const Color(0xFF1B8F4E),
           Icons.check_circle,
           'Synced',
         );
       case SyncStatus.pending:
         return (
-          const Color(0xFFFEF3C7),
-          const Color(0xFFD97706),
-          Icons.access_time_filled,
+          const Color(0xFFFFF3E2),
+          const Color(0xFFFCDDB0),
+          const Color(0xFFE8890C),
+          Icons.access_time,
           'Pending',
         );
       case SyncStatus.syncing:
         return (
-          const Color(0xFFE0F2FE),
-          const Color(0xFF0284C7),
+          const Color(0xFFE3EEFD),
+          const Color(0xFFCFE1FB),
+          const Color(0xFF2563EB),
           Icons.sync,
           'Syncing',
         );
       case SyncStatus.failed:
         return (
-          const Color(0xFFFEE2E2),
-          const Color(0xFFDC2626),
+          const Color(0xFFFDE9E7),
+          const Color(0xFFF9CFCA),
+          const Color(0xFFE03A26),
           Icons.error,
           'Failed',
         );

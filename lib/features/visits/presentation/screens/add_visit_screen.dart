@@ -9,39 +9,43 @@ class AddVisitScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<VisitProvider>();
+    final online = provider.isOnline == true;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: const Color(0xFFFAFBFE),
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF8FAFC),
+        backgroundColor: const Color(0xFFFAFBFE),
         elevation: 0,
         scrolledUnderElevation: 0,
-        leadingWidth: 42,
+        toolbarHeight: 64,
+        leadingWidth: 48,
         titleSpacing: 0,
         leading: IconButton(
-          padding: const EdgeInsets.only(left: 12),
+          padding: const EdgeInsets.only(left: 14),
           constraints: const BoxConstraints(),
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF0F172A)),
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF0F172A), size: 24),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               'Add Visit',
               style: TextStyle(
                 color: Color(0xFF0F172A),
-                fontWeight: FontWeight.w700,
-                fontSize: 18,
-                letterSpacing: -0.2,
+                fontWeight: FontWeight.w600,
+                fontSize: 20,
+                letterSpacing: -0.3,
+                height: 1.2,
               ),
             ),
-            SizedBox(height: 1),
+            SizedBox(height: 2),
             Text(
               'Record a new customer visit',
               style: TextStyle(
                 color: Color(0xFF64748B),
-                fontSize: 11.5,
+                fontSize: 12.5,
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -49,33 +53,34 @@ class AddVisitScreen extends StatelessWidget {
         ),
         actions: [
           Container(
-            margin: const EdgeInsets.symmetric(vertical: 13, horizontal: 12),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
+            margin: const EdgeInsets.only(right: 14, top: 14, bottom: 22),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
-              color: provider.isOnline == true ? const Color(0xFFF0FDF4) : const Color(0xFFF1F5F9),
+              color: online ? const Color(0xFFE8F7EE) : const Color(0xFFF1F5F9),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: provider.isOnline == true ? const Color(0xFFDCFCE7) : const Color(0xFFE2E8F0),
-              ),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 6.5,
-                  height: 6.5,
+                  width: 7,
+                  height: 7,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: provider.isOnline == true ? const Color(0xFF16A34A) : const Color(0xFF94A3B8),
+                    color: online
+                        ? const Color(0xFF16A34A)
+                        : const Color(0xFF94A3B8),
                   ),
                 ),
                 const SizedBox(width: 5),
                 Text(
-                  provider.isOnline == true ? 'Online' : 'Offline',
+                  online ? 'Online' : 'Offline',
                   style: TextStyle(
-                    color: provider.isOnline == true ? const Color(0xFF15803D) : const Color(0xFF64748B),
-                    fontSize: 11.5,
-                    fontWeight: FontWeight.w600,
+                    color: online
+                        ? const Color(0xFF15803D)
+                        : const Color(0xFF64748B),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
@@ -85,7 +90,7 @@ class AddVisitScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 40),
+          padding: const EdgeInsets.fromLTRB(12, 6, 12, 32),
           child: VisitForm(
             isLoading: provider.isSaving,
             onSave: ({

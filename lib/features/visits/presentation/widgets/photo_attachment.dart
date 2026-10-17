@@ -1,5 +1,4 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart';
+import '../../../../core/widgets/visit_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../core/services/photo_service.dart';
@@ -44,21 +43,13 @@ class _PhotoPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageWidget = kIsWeb
-        ? Image.network(
-            path,
-            height: 180,
-            width: double.infinity,
-            fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => const _MissingPhoto(),
-          )
-        : Image.file(
-            File(path),
-            height: 180,
-            width: double.infinity,
-            fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => const _MissingPhoto(),
-          );
+    final imageWidget = VisitImage(
+      path: path,
+      height: 180,
+      width: double.infinity,
+      fit: BoxFit.cover,
+      errorBuilder: (_, __, ___) => const _MissingPhoto(),
+    );
 
     return Stack(
       children: [
@@ -125,7 +116,7 @@ class _PhotoPickerButton extends StatelessWidget {
               title: const Text('Take a photo'),
               onTap: () {
                 Navigator.of(ctx).pop();
-                _pick(ImageSource.camera);
+                _pick(ImageSource.camera, context);
               },
             ),
             ListTile(
@@ -133,7 +124,7 @@ class _PhotoPickerButton extends StatelessWidget {
               title: const Text('Choose from gallery'),
               onTap: () {
                 Navigator.of(ctx).pop();
-                _pick(ImageSource.gallery);
+                _pick(ImageSource.gallery, context);
               },
             ),
           ],
@@ -142,9 +133,9 @@ class _PhotoPickerButton extends StatelessWidget {
     );
   }
 
-  Future<void> _pick(ImageSource source) async {
+  Future<void> _pick(ImageSource source, BuildContext context) async {
     final service = PhotoService();
-    final path = await service.pickAndSavePhoto(source: source);
+    final path = await service.pickAndSavePhoto(source: source, context: context);
     if (path != null) {
       onPhotoSelected(path);
     }
